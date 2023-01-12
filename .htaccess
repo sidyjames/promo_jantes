@@ -1,0 +1,108 @@
+RewriteEngine on
+
+RewriteCond %{SERVER_PORT} 80
+RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [R=307,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [NC,L]
+php_value auto_prepend_file "__inc/header.php"
+php_value auto_append_file "__inc/footer.php"
+
+
+DirectoryIndex /index.php
+
+
+ErrorDocument 404 https://localhost/cdt/entraxe-jantes-alu-v2/web/404
+#---------------------------------
+#Réecriture URL
+#---------------------------------
+RewriteRule /index.php /
+
+#---------------------------------
+#Réecriture parametres Jantes alu
+#---------------------------------
+
+RewriteRule ^jantes-alu$ produits/jantes/jantes-alu.php [NC,L]
+RewriteRule ^jantes-alu-pour-([a-zA-Z\s]+)$ produits/jantes/jantes-alu.php?marqueSelected=$1 [L]
+RewriteRule ^jantes-alu-pour-([a-zA-Z\s]+)-([a-zA-Z-0-9][^-]+)$ produits/jantes/jantes-alu.php?marqueSelected=$1&modeleSelected=$2 [L]
+RewriteRule ^jantes-alu-pour-([a-zA-Z\s]+)-([a-zA-Z-0-9][^-]+)-([0-9]+)$ produits/jantes/jantes-alu.php?marqueSelected=$1&modeleSelected=$2&vehiculeSelected=$3 [L]
+RewriteRule ^jantes-alu-pour-([a-zA-Z\s]+)-([a-zA-Z-0-9][^-]+)-en-([0-9]+)-pouces-([0-9]+)$ produits/jantes/jantes-alu.php?marqueSelected=$1&modeleSelected=$2&DiametreSelected=$3&vehiculeSelected=$4 [L]
+RewriteRule ^jantes-alu-pour-([a-zA-Z\s]+)-([a-zA-Z-0-9][^-]+)-en-([0-9]+)-pouces-([a-zA-Z\s]+)-([0-9]+)$ produits/jantes/jantes-alu.php?marqueSelected=$1&modeleSelected=$2&DiametreSelected=$3&marqueJante=$4&vehiculeSelected=$5 [L]
+RewriteRule ^jantes-alu-pour-([a-zA-Z\s]+)-([a-zA-Z-0-9][^-]+)-en-([0-9]+)-pouces-([a-zA-Z\s]+)-([a-zA-Z\s]+)-([0-9]+)$ produits/jantes/jantes-alu.php?marqueSelected=$1&modeleSelected=$2&DiametreSelected=$3&marqueJante=$4&couleurJante=$5&vehiculeSelected=$6 [L]
+RewriteRule ^jantes-alu-pour-([a-zA-Z\s]+)-([a-zA-Z-0-9][^-]+)-en-([0-9]+)-pouces-([a-zA-Z\s]+)-([a-zA-Z\s]+)-([a-zA-Z\s]+)-([0-9]+)$ produits/jantes/jantes-alu.php?marqueSelected=$1&modeleSelected=$2&DiametreSelected=$3&marqueJante=$4&couleurJante=$5&styleJante=$6&vehiculeSelected=$7 [L]
+#------------------------------------------
+#Fin de Réecriture parametres Jantes alu
+#------------------------------------------
+
+#------------------------------------------
+#Réecriture parametres (Page Produit)
+#-------------------------------------------
+RewriteRule ^jante-alu$ produits/produit_page.php [NC,L]
+RewriteRule ^jante-alu-([0-9]+)$ produits/produit_page.php?id=$1 [L]
+RewriteRule ^jante-alu-pour-([a-zA-Z\s]+)-([a-zA-Z-0-9][^-]+)-([0-9]+)-([0-9]+)$ produits/produit_page.php?marqueSelected=$1&modeleSelected=$2&vehiculeSelected=$3&id=$4 [L]
+RewriteRule ^jante-alu-pour-([a-zA-Z\s]+)-([a-zA-Z-0-9][^-]+)-en-([0-9]+)-pouces-([0-9]+)-([0-9]+)$ produits/produit_page.php?marqueSelected=$1&modeleSelected=$2&DiametreSelected=$3&vehiculeSelected=$4&id=$5 [L]
+#-----------------------------------------------
+#Fin de Réecriture parametres  (Page Produit)
+#------------------------------------------------
+RewriteRule ^jquery_return$ __inc/templates/nav-search/jquery_return.php [QSA]
+RewriteRule ^inscription$ user/inscription.php [NC,L]
+RewriteRule ^mon-compte$ user/profile/profile.php [NC,L]
+RewriteRule ^details_cmd$ user/profile/details_cmd.php [NC,L]
+RewriteRule ^commandes$ user/profile/historique_cmd.php [NC,L]
+RewriteRule ^changer-mot-passe$ user/profile/change-mot-passe.php [NC,L]
+RewriteRule ^changer-parametre$ user/profile/change-parametre.php [NC,L]
+RewriteRule ^produits-achetes$ user/profile/liste-produits-achetes.php [NC,L]
+RewriteRule ^ajout_caddie$ achats/caddie/ajout_caddie.php [NC,L]
+RewriteRule ^infos_livraison$ achats/caddie/formulaire_achat.php [NC,L]
+RewriteRule ^paie$ achats/caddie/fin_commande.php [NC,L]
+RewriteRule ^panier$ achats/caddie/affichage_caddie.php [NC,L]
+RewriteRule /accueil.php /index.php
+RedirectPermanent /marques.php /marque.php
+RedirectPermanent /entraxes.php /entraxe.php
+RedirectPermanent /links/Wentraxe.php /faq.php
+RedirectPermanent /links/Wdeport.php /faq.php
+RedirectPermanent /links/Walesage.php /faq.php
+#-------------------------------
+#Fin Réecriture
+#-------------------------------
+
+#------------------------------------------
+#Réecriture parametres caddie
+#-------------------------------------------
+RewriteRule ^panier-del([0-9]+)$ achats/caddie/affichage_caddie.php?delete=$1 [L]
+RewriteRule ^panier-([0-9]+)-([0-9]+)$ achats/caddie/affichage_caddie.php?product=$1&cart_quantity=$2 [L]
+#-----------------------------------------------
+#Fin de Réecriture parametres  caddie
+#------------------------------------------------
+
+
+#-------------------------------
+#Redirection Recherche Marque
+#-------------------------------
+
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/marques_voitures/marquevoiture.php\?marque=([^&\s]+) [NC]
+RewriteRule ^ /searchVehicule.php?marque=%1 [R=301,NE,NC,R,L]
+#-------------------------------
+#Fin de redirection recherche marque
+#-------------------------------
+
+#-------------------------------
+#Redirection Recherche Entraxe
+#-------------------------------
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/entraxes_voitures/entraxe.php\?entraxe=([^&\s]+) [NC]
+RewriteRule ^ /searchEntraxe.php?entraxe=%1 [R=301,NE,NC,R,L]
+#-------------------------------
+#Fin de redirection entraxe
+#-------------------------------
+
+#-------------------------------
+#Redirection Marque
+#-------------------------------
+
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/marques_voitures/([^&\s]+)\.php [NC]
+RewriteRule ^ /searchVehicule.php?marque=%1 [R=301,NE,NC,R,L]
+#-------------------------------
+#Fin de redirection marque
+#-------------------------------
+
